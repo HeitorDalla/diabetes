@@ -136,3 +136,24 @@ test_metrics_gs = evaluate_metrics(y_test, y_test_preds_gs)
 
 # Salvar o modelo
 pickle.dump(best_gs_model, open('final_model.pkl', 'wb'))
+
+# Carregar o modelo treinado (sem scaler)
+model = pickle.load(open('final_model.pkl', 'rb'))
+
+# Dados de entrada do paciente — MESMA ORDEM das colunas do dataset
+input_data = (5, 166, 72, 19, 175, 25.8, 0.587, 51)
+
+# Converter para array NumPy
+input_data_array = np.asarray(input_data)
+
+# Remodelar para uma única instância (1 linha, n colunas)
+input_data_reshaped = input_data_array.reshape(1, -1)
+
+# Fazer a previsão
+prediction = model.predict(input_data_reshaped)
+
+# Interpretar a saída
+if prediction[0] == 0:
+    print('✅  A pessoa **NÃO** é diabética.')
+else:
+    print('⚠️  A pessoa **É** diabética.')
