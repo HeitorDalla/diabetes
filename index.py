@@ -46,18 +46,27 @@ X_train, X_test, y_train, y_test = train_test_split(X,
                                                     random_state=42)
 
 # Escolher modelo para treinamento dos dados
-model = RandomForestClassifier(n_jobs=1,
+model = RandomForestClassifier(max_depth=10,
+                               min_samples_leaf=5,
+                               n_estimators=100,
+                               n_jobs=-1,
                                random_state=42)
 
 # Treinando o modelo com os dados
 training = model.fit(X_train,
                      y_train)
 
-# Previsão do modelo
-X_test_preds = model.predict(X_test)
+# Previsão e avaliação do modelo de treinamento
+print("As métricas do modelo de treinamento é: ")
+y_train_preds = model.predict(X_train)
+train_metrics = evaluate_metrics(y_train, y_train_preds)
 
-# Avaliação do modelo com parâmetros padrões
-test_metrics = evaluate_metrics(y_test, X_test_preds)
+print("------------------")
+
+# Previsão e avaliação do modelo de teste
+print("As métricas do modelo de teste é: ")
+y_test_preds = model.predict(X_test)
+test_metrics = evaluate_metrics(y_test, y_test_preds)
 
 # Melhorando os parâmetros
 grid = {
@@ -78,13 +87,20 @@ rs_model = RandomizedSearchCV(model,
 # Treinar o novo modelo
 rs_training = rs_model.fit(X_train, y_train)
 
-# Fazendo previsão com o novo trainamento
-rs_preds = rs_model.predict(X_test)
+# Melhor modelo do RandomizedSearch
+best_rs_model = rs_model.best_estimator_
 
-# Avaliando o novo modelo
-rs_metrics = evaluate_metrics(y_test, rs_preds)
+# Previsão e avaliação do modelo de treinamento do RandomizedSearch
+print("Avaliação do melhor modelo de treinamento do RandomizedSearch é: ")
+y_train_preds_rs = best_rs_model.predict(X_train)
+train_metrics_rs = evaluate_metrics(y_train, y_train_preds_rs)
 
-print("Os melhores parâmetros do modelo é: {}" .format(rs_model.best_params_))
+print("------------------")
+
+# Previsão e avaliação do modelo de teste do RandomizedSearch
+print("Avaliação do melhor modelo de teste do RandomizedSearch é: ")
+y_test_preds_rs = best_rs_model.predict(X_test)
+test_metrics_rs = evaluate_metrics(y_test, y_test_preds_rs)
 
 # Definindo um novo modelo a partir dos melhores hiperparâmetros
 grid2 = {
@@ -100,16 +116,23 @@ gs_model = GridSearchCV(model,
                         cv=5,
                         verbose=2)
 
-# Treinar o modelo parametrizado
+# Treinar o novo modelo
 gs_training = gs_model.fit(X_train, y_train)
 
-# Fazendo previsões com o modelo treinado
-gs_preds = gs_model.predict(X_test)
+# Melhor modelo do GridSearch
+best_gs_model = gs_model.best_estimator_
 
-# Avaliando o modelo treinado
-gs_metrics = evaluate_metrics(y_test, gs_preds)
+# Previsão e avaliação do modelo de treinamento do GridSearch
+print("Avaliação do melhor modelo de treinamento do GridSearch é: ")
+y_train_preds_gs = best_gs_model.predict(X_train)
+train_metrics_gs = evaluate_metrics(y_train, y_train_preds_gs)
 
-print("Os melhores parâmetros do modelo é: {}" .format(gs_model.best_params_))
+print("------------------")
+
+# Previsão e avaliação do modelo de teste do GridSearch
+print("Avaliação do melhor modelo de teste do GridSearch é: ")
+y_test_preds_gs = best_gs_model.predict(X_test)
+test_metrics_gs = evaluate_metrics(y_test, y_test_preds_gs)
 
 # Salvar o modelo
-pickle.dump(rs_model, open('final_model.pkl', 'wb'))
+pickle.dump(best_gs_model, open('final_model.pkl', 'wb'))
