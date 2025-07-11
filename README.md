@@ -1,6 +1,6 @@
 # 🏢 Projeto de Previsão de Diabetes
 
-ste projeto visa construir um modelo de **classificação supervisionada** capaz de prever a **presença de diabetes** com base em características clínicas como **nível de glicose**, **pressão arterial**, **índice de massa corporal (IMC)**, entre outras variáveis.
+Este projeto visa construir um modelo de **classificação supervisionada** capaz de prever a **presença de diabetes** com base em características clínicas como **nível de glicose**, **pressão arterial**, **índice de massa corporal (IMC)**, entre outras variáveis.
 
 ---
 
